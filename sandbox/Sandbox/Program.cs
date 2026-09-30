@@ -1,25 +1,32 @@
 using System;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 
 class Program
 {
+    static double AddNumbers(double x, int y)
+    {
+        return x + y;
+    }
+
+    static void DisplayGreeting(string name)
+    {
+        Console.WriteLine($"Welcome {name}, please to meet you.");
+    }
     static void Main(string[] args)
     {
-        int x = 5;
-        int y = 20;
-
-        if (x == 10 && y  == 20)
+        DisplayGreeting("Bob");
+        double answer = AddNumbers(12.234, 10);
+        Console.WriteLine(answer);
+        /*int num = 0;
+        int sum = 0;
+        while(num < 10)
         {
-            Console.WriteLine("X is 10");
-
+            num = num + 1;
+            Console.WriteLine($"{num}");
+            sum = sum + num;
         }
-        else if (x == 9)
-        {
-            Console.WriteLine("x = 9");
-        }
-        else
-        {
-            Console.WriteLine("x is not 10");
-        }
+        int sumtot = sum;
+        Console.WriteLine($"Sum Total: {sumtot}"); */
     }
 }
