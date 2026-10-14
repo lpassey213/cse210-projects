@@ -6,7 +6,7 @@ class Menu
     public int ProcessMenu()
     {
         int response = 0;
-
+            int rgh =5;
         while (response < 1 || response > 5)
         {
             Console.WriteLine("Welcome to the Journaling Program!");

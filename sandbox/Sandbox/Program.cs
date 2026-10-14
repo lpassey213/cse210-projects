@@ -7,11 +7,12 @@ class Program
     static double AddNumbers(double x, int y)
     {
         return x + y;
+        
     }
 
     static void DisplayGreeting(string name)
     {
-        Console.WriteLine($"Welcome {name}, please to meet you.");
+        Console.WriteLine($"Welcome {name}, please to meet you."); //john
     }
     static void Main(string[] args)
     {
@@ -24,7 +25,7 @@ class Program
         {
             num = num + 1;
             Console.WriteLine($"{num}");
-            sum = sum + num;
+            sum = sum + num; hi
         }
         int sumtot = sum;
         Console.WriteLine($"Sum Total: {sumtot}"); */
