@@ -24,12 +24,18 @@ class Word
 
     public void Display()
     {
-        Console.Write($"{_word} ");
+        Console.Write($"{GetWordString()} ");
     }
 
-    public void GetWordString()
+    private string GetWordString()
     {
-        string returnString = "";
-        if (_hidden == true);
+        if (_hidden)
+        {
+            return new string('_', _word.Length);
+        }
+        else
+        {
+            return _word;
+        }
     }
 }
