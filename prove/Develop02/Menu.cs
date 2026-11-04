@@ -4,7 +4,7 @@ class Menu
     {
         int response = 0;
 
-        while (response < 1 || response > 5)
+        while (response < 1 || response > 6)
         {
             Console.WriteLine("Welcome to the Journaling Program!");
             Console.WriteLine("Create, Display, Save, and Read Journal Entries");
@@ -23,9 +23,9 @@ class Menu
                 response = 0;
             }
 
-            if (response < 1 || response > 5)
+            if (response < 1 || response > 6)
             {
-                Console.WriteLine("Please enter a number between 1 and 5.");
+                Console.WriteLine("Please enter a number between 1 and 6.");
             }
         }
 
