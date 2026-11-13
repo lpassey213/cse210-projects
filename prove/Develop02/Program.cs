@@ -1,19 +1,15 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-// Creativity addition: Journal statistics show the user their total
-// entries, how many they wrote today, and their average words per entry.
-// This helps users track their journaling habits and progress.
+
 class Program
 {
     static void Main(string[] args)
     {
         Menu myMenu = new Menu();
-        List<JournalEntry> journalEntries = new List<JournalEntry>();
+        Journal myJournal = new Journal();
 
         int response = 0;
 
-        while (response != 7)
+        while (response != 6)
         {
             response = myMenu.ProcessMenu();
 
@@ -21,64 +17,30 @@ class Program
             {
                 JournalEntry entry = new JournalEntry();
                 entry.CreateJournalEntry();
-                journalEntries.Add(entry);
+                myJournal.AddEntry(entry);
             }
             else if (response == 2)
             {
-                foreach (JournalEntry entry in journalEntries)
-                {
-                    entry.DisplayEntry();
-                    Console.WriteLine();
-                }
+                myJournal.DisplayJournal();
             }
             else if (response == 3)
             {
-                Console.Write("Enter filename: ");
-                string filename = Console.ReadLine();
-
-                using (StreamWriter outputFile = new StreamWriter(filename))
-                {
-                    foreach (JournalEntry entry in journalEntries)
-                    {
-                        outputFile.WriteLine($"{entry._date}|{entry._prompt}|{entry._response}");
-                    }
-                }
-
-                Console.WriteLine("Journal saved.");
+                myJournal.SaveJournal();
             }
             else if (response == 4)
             {
-                Console.Write("Enter filename: ");
-                string filename = Console.ReadLine();
-
-                string[] lines = File.ReadAllLines(filename);
-
-                journalEntries.Clear();
-
-                foreach (string line in lines)
-                {
-                    string[] parts = line.Split('|');
-
-                    JournalEntry entry = new JournalEntry();
-                    entry._date = parts[0];
-                    entry._prompt = parts[1];
-                    entry._response = parts[2];
-
-                    journalEntries.Add(entry);
-                }
-
-                Console.WriteLine("Journal loaded.");
+                myJournal.LoadJournal();
             }
-            else if (response == 5) 
+            else if (response == 5)
             {
                 Console.WriteLine("Journal Statistics");
 
-                Console.WriteLine($"Total entries: {journalEntries.Count}");
+                Console.WriteLine($"Total entries: {myJournal._entries.Count}");
 
                 int entriesToday = 0;
                 int totalWords = 0;
 
-                foreach (JournalEntry entry in journalEntries)
+                foreach (JournalEntry entry in myJournal._entries)
                 {
                     if (entry._date == DateTime.Now.ToShortDateString())
                     {
@@ -86,17 +48,17 @@ class Program
                     }
 
                     string[] words = entry._response.Split(
-                            ' ', StringSplitOptions.RemoveEmptyEntries);
+                        ' ', StringSplitOptions.RemoveEmptyEntries);
 
-                    totalWords += words.Length;
+                    totalWords = totalWords + words.Length;
                 }
 
                 Console.WriteLine($"Entries written today: {entriesToday}");
 
-                if (journalEntries.Count > 0)
+                if (myJournal._entries.Count > 0)
                 {
-                    double averageWords = (double)totalWords / journalEntries.Count;
-                    Console.WriteLine($"Average words per entry: {averageWords:F11}");
+                    double averageWords = (double)totalWords / myJournal._entries.Count;
+                    Console.WriteLine($"Average words per entry: {averageWords:F1}");
                 }
                 else
                 {
