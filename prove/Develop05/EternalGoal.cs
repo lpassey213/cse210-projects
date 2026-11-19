@@ -1,27 +1,20 @@
-namespace EternalQuest;
+using System;
 
 public class EternalGoal : BaseGoal
 {
-    public EternalGoal(string name, string description, int points)
-        : base(name, description, points)
+    public override void RecordEvent()
     {
+        Console.WriteLine($"You earned {GetPoints()} points!");
     }
 
-    public override int RecordEvent()
+    public override bool IsComplete()
     {
-        return Points;
+        return false;
     }
 
-    public override bool IsComplete() => false;
-
-    public override string GetDetailsString()
+    public override string GetConsoleString()
     {
-        return $"[ ] {Name} ({Description})";
-    }
-
-    public override string GetSaveString()
-    {
-        return $"Eternal~{GetBasicSaveData()}";
+        return $"[ ] Eternal Goal: {GetName()}, " +
+               $"Description: {GetDescription()}, Points: {GetPoints()}";
     }
 }
-

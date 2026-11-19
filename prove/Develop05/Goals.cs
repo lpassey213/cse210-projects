@@ -1,94 +1,113 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 
-namespace EternalQuest;
-
+// This class manages the user's goals and total score.
 public class Goals
 {
-    private readonly List<BaseGoal> _goals = new();
-    private int _score;
-    public int Score => _score;
-    public void AddGoal(BaseGoal goal)
+    // Stores all goals using the BaseGoal type.
+    // This allows SimpleGoal, EternalGoal, and ChecklistGoal
+    // to be stored in the same list.
+    private List<BaseGoal> _goals = new List<BaseGoal>();
+
+    // Stores the user's total points.
+    private int _score = 0;
+
+    // Allows the user to create a new goal.
+    public void CreateGoal()
     {
-        _goals.Add(goal);
+        Console.WriteLine("1. Simple Goal");
+        Console.WriteLine("2. Eternal Goal");
+        Console.WriteLine("3. Checklist Goal");
+        Console.Write("Which type of goal would you like to create? ");
+
+        string choice = Console.ReadLine();
+
+        // Create the type of goal selected by the user.
+        if (choice == "1")
+        {
+            _goals.Add(new SimpleGoal());
+        }
+        else if (choice == "2")
+        {
+            _goals.Add(new EternalGoal());
+        }
+        else if (choice == "3")
+        {
+            _goals.Add(new ChecklistGoal());
+        }
+        else
+        {
+            Console.WriteLine("Invalid choice.");
+        }
     }
 
+    // Displays all of the goals in the list.
     public void DisplayGoals()
     {
+        // Check whether the user has created any goals.
         if (_goals.Count == 0)
         {
-            Console.WriteLine("No goals have been created yet.");
+            Console.WriteLine("You do not have any goals yet.");
             return;
         }
 
+        // Display each goal with its number.
         for (int i = 0; i < _goals.Count; i++)
         {
-            Console.WriteLine($"{i + 1}. {_goals[i].GetDetailsString()}");
+            Console.WriteLine($"{i + 1}. {_goals[i].GetConsoleString()}");
         }
     }
 
-    public void RecordEvent(int goalNumber)
+    // Records an event for one of the user's goals.
+    public void RecordEvent()
     {
-        if (goalNumber < 1 || goalNumber > _goals.Count)
+        // Make sure there is a goal to record.
+        if (_goals.Count == 0)
         {
-            Console.WriteLine("That goal number is not valid.");
+            Console.WriteLine("You do not have any goals to record.");
             return;
         }
 
-        int earned = _goals[goalNumber - 1].RecordEvent();
-        _score += earned;
-        Console.WriteLine($"You earned {earned} points. Your score is now {_score}.");
-    }
+        // Show the goals so the user can select one.
+        DisplayGoals();
 
-    public void Save(string filename)
-    {
-        using StreamWriter output = new(filename);
-        output.WriteLine(_score);
+        Console.Write("Which goal did you complete? ");
+        int choice = int.Parse(Console.ReadLine());
 
-        foreach (BaseGoal goal in _goals)
+        // Check whether the selected goal number is valid.
+        if (choice < 1 || choice > _goals.Count)
         {
-            output.WriteLine(goal.GetSaveString());
-        }
-    }
-
-    public void Load(string filename)
-    {
-        if (!File.Exists(filename))
-        {
-            Console.WriteLine("The save file does not exist.");
+            Console.WriteLine("Invalid goal number.");
             return;
         }
 
-        string[] lines = File.ReadAllLines(filename);
-        if (lines.Length == 0)
+        // Get the selected goal from the list.
+        BaseGoal goal = _goals[choice - 1];
+
+        // Add points depending on the type of goal.
+        if (goal is SimpleGoal && !goal.IsComplete())
         {
-            return;
+            _score += goal.GetPoints();
+        }
+        else if (goal is EternalGoal)
+        {
+            _score += goal.GetPoints();
+        }
+        else if (goal is ChecklistGoal && !goal.IsComplete())
+        {
+            _score += goal.GetPoints();
         }
 
-        _goals.Clear();
-        _score = int.Parse(lines[0]);
+        // Use polymorphism to run the correct RecordEvent method.
+        goal.RecordEvent();
 
-        for (int i = 1; i < lines.Length; i++)
-        {
-            BaseGoal? goal = CreateGoalFromString(lines[i]);
-            if (goal != null)
-            {
-                _goals.Add(goal);
-            }
-        }
+        // Display the updated score.
+        Console.WriteLine($"Your total score is {_score} points.");
     }
 
-    private static BaseGoal? CreateGoalFromString(string line)
+    // Returns the user's current score.
+    public int GetScore()
     {
-        string[] parts = line.Split('~');
-        if (parts.Length < 2)
-        {
-            return null;
-        }
-
-        string type = parts[0];
-        string[] data = parts[1].Split('|');
-
-        try
-        {
+        return _score;
+    }
+}

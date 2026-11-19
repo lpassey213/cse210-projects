@@ -1,96 +1,60 @@
 using System;
 
-namespace EternalQuest;
-
 public class Program
 {
     public static void Main()
     {
-        Goals goals = new();
+        // Create an object to manage all of the user's goals and score.
+        Goals goals = new Goals();
+
+        // This controls whether the menu continues to display.
         bool running = true;
 
-        // Creativity: the program displays the player's level and gives a title
-        // based on the score, making progress feel more like a game.
         while (running)
         {
+            // Display the user's current score.
             Console.WriteLine();
-            Console.WriteLine($"You have {goals.Score} points.");
-            Console.WriteLine($"Level: {GetLevel(goals.Score)} - {GetTitle(goals.Score)}");
+            Console.WriteLine($"You have {goals.GetScore()} points.");
+
+            // Display the menu options.
             Console.WriteLine("Menu options:");
-            Console.WriteLine("  1. Create New Goal");
-            Console.WriteLine("  2. List Goals");
-            Console.WriteLine("  3. Save Goals");
-            Console.WriteLine("  4. Load Goals");
-            Console.WriteLine("  5. Record Event");
-            Console.WriteLine("  6. Quit");
+            Console.WriteLine("1. Create New Goal");
+            Console.WriteLine("2. List Goals");
+            Console.WriteLine("3. Record Event");
+            Console.WriteLine("4. Quit");
             Console.Write("Select a choice: ");
 
-            string choice = Console.ReadLine() ?? "";
+            string choice = Console.ReadLine();
 
+            // Run the action selected by the user.
             switch (choice)
             {
                 case "1":
-                    CreateGoal(goals);
+                    // Create a new goal.
+                    goals.CreateGoal();
                     break;
+
                 case "2":
+                    // Display all existing goals.
                     goals.DisplayGoals();
                     break;
+
                 case "3":
-                    Console.Write("Enter a filename: ");
-                    goals.Save(Console.ReadLine() ?? "goals.txt");
-                    Console.WriteLine("Goals saved.");
+                    // Record progress on a goal and add points.
+                    goals.RecordEvent();
                     break;
+
                 case "4":
-                    Console.Write("Enter a filename: ");
-                    goals.Load(Console.ReadLine() ?? "goals.txt");
-                    Console.WriteLine("Goals loaded.");
-                    break;
-                case "5":
-                    goals.DisplayGoals();
-                    Console.Write("Which goal did you accomplish? ");
-                    if (int.TryParse(Console.ReadLine(), out int goalNumber))
-                    {
-                        goals.RecordEvent(goalNumber);
-                    }
-                    break;
-                case "6":
+                    // Stop the program.
                     running = false;
+                    Console.WriteLine("Goodbye!");
                     break;
+
                 default:
-                    Console.WriteLine("Please select a valid option.");
+                    // Handle an invalid menu selection.
+                    Console.WriteLine("Invalid choice.");
                     break;
             }
         }
     }
-
-    private static void CreateGoal(Goals goals)
-    {
-        Console.WriteLine("Goal types:");
-        Console.WriteLine("  1. Simple Goal");
-        Console.WriteLine("  2. Eternal Goal");
-        Console.WriteLine("  3. Checklist Goal");
-        Console.Write("Select a goal type: ");
-        string type = Console.ReadLine() ?? "";
-
-        Console.Write("What is the name of your goal? ");
-        string name = Console.ReadLine() ?? "Unnamed goal";
-        Console.Write("What is a short description? ");
-        string description = Console.ReadLine() ?? "";
-        int points = ReadInt("What is the amount of points for this goal? ");
-
-        switch (type)
-        {
-            case "1":
-                goals.AddGoal(new SimpleGoal(name, description, points));
-                break;
-            case "2":
-                goals.AddGoal(new EternalGoal(name, description, points));
-                break;
-            case "3":
-                int target = ReadInt("How many times must this goal be completed? ");
-                int bonus = ReadInt("What is the bonus for completing it? ");
-                goals.AddGoal(new ChecklistGoal(name, description, points, target, bonus));
-                break;
-            default:
-                Console.WriteLine("Invalid goal type.");
-                return;
+}
